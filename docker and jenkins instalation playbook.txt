@@ -1,0 +1,42 @@
+- name: Install Jenkins and Docker
+  hosts: prabhas
+  become: true
+
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Ensure Docker group exists
+      group:
+         name: docker
+         state: present
+
+    - name: Start and Enable Docker Service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Install Jenkins
+      yum:
+        name: jenkins
+        state: present
+
+    - name: Start and Enable Jenkins
+      systemd:
+        name: jenkins
+        enabled: yes
+        state: started
+
+          #    - name: Add Jenkins user to Docker group
+      #      user:
+        #        name: jenkins
+          #        groups: docker
+          #        append: yes
+
+    - name: Restart Jenkins to apply group changes
+      systemd:
+        name: jenkins
+        state: restarted
